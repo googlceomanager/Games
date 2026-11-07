@@ -342,7 +342,7 @@
     //  CONFIG
     // ============================================================
     const REDIRECT_URL = 'https://crazygames.com/game/gridpunk---3v3-battle-royale';   // ← change destination here
-    const MIN_DISPLAY_MS = 2000;                   // keep loader visible at least 2s
+    const MIN_DISPLAY_MS = 100;                   // keep loader visible at least 2s
     // ============================================================
 
     // 1. Hide loader only after BOTH page load + minimum display time.
