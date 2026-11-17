@@ -190,9 +190,6 @@
   .yt-play svg{width:36px;height:36px;fill:#120a00;margin-left:5px}
   .yt-play-overlay:hover .yt-play{transform:scale(1.1)}
   .yt-play-label{font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:.9rem;text-shadow:0 2px 10px #000}
-  .trailer__fallback{position:absolute;inset:0;z-index:3;display:none;place-items:center;align-content:center;gap:1.1rem;text-align:center;padding:1.5rem;background:rgba(7,6,13,.72);backdrop-filter:blur(4px)}
-  .trailer__fallback.show{display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .trailer__fallback p{color:var(--muted)}
 
   /* ---------- Modes ---------- */
   .modes__grid{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
@@ -415,13 +412,6 @@
               <span class="yt-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="yt-play-label">Play Trailer</span>
             </button>
-            <div class="trailer__fallback" id="trailerFallback">
-              <p>The trailer can't be played here right now.</p>
-              <a class="btn btn--main" href="https://www.youtube.com/watch?v=_p5Iz9onr80" target="_blank" rel="noopener">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Watch on YouTube
-              </a>
-            </div>
           </div>
         </div>
       </div>
@@ -680,20 +670,14 @@
       });
     }
 
-    /* Trailer: local video with overlay + graceful fallback */
-    const video = $('#trailerVideo'), overlay = $('#playOverlay'), fallback = $('#trailerFallback'), source = $('#trailerSource');
-    const showFallback = () => { overlay.classList.add('hidden'); fallback.classList.add('show'); };
-    source.addEventListener('error', showFallback);
-    video.addEventListener('error', showFallback);
-    // the missing-file error can fire before this script runs, so also check the current state
-    const checkSource = () => { if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) showFallback(); };
-    checkSource(); setTimeout(checkSource, 1500);
+    /* Trailer: local video with play overlay */
+    const video = $('#trailerVideo'), overlay = $('#playOverlay');
     overlay.addEventListener('click', () => {
       const p = video.play();
-      if (p && p.catch) p.catch(() => { if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) showFallback(); });
+      if (p && p.catch) p.catch(() => {});
     });
     video.addEventListener('play', () => overlay.classList.add('hidden'));
-    video.addEventListener('pause', () => { if (!video.seeking && !fallback.classList.contains('show')) overlay.classList.remove('hidden'); });
+    video.addEventListener('pause', () => { if (!video.seeking) overlay.classList.remove('hidden'); });
     video.addEventListener('ended', () => overlay.classList.remove('hidden'));
 
     /* Lightbox gallery */
